@@ -39,7 +39,7 @@ public class UnclaimParchmentItem extends AbstractClaimItem {
         return 1 == OpacClaimProcess((ServerPlayerEntity) user, false, false, false);
     }
     @Override
-    protected void successAction(World world, PlayerEntity user, ChunkPos pos) {
+    protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
         {
             ServerPlayNetworking.send((ServerPlayerEntity) user, PacketIdentifiers.UNCLAIM_SUCCESS, PacketByteBufs.empty());
 

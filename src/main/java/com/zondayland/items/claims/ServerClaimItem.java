@@ -67,7 +67,7 @@ public class ServerClaimItem extends AbstractClaimItem {
     }
 
     @Override
-    protected void successAction(World world, PlayerEntity user, ChunkPos pos) {
+    protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
         {
             ServerPlayNetworking.send(
                     (ServerPlayerEntity) user,

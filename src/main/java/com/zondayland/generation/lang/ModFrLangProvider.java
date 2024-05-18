@@ -1,5 +1,6 @@
 package com.zondayland.generation.lang;
 
+import com.zondayland.registry.ModBlocks;
 import com.zondayland.registry.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -12,10 +13,14 @@ public class ModFrLangProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(TranslationBuilder translationBuilder) {
+        // Items
         translationBuilder.add(ModItems.LOGO, "Logo");
         translationBuilder.add(ModItems.CLAIM_PARCHMENT, "Parchemin de Claim");
         translationBuilder.add(ModItems.UNCLAIM_PARCHMENT, "Parchemin de Déclaim");
         translationBuilder.add(ModItems.SERVER_CLAIM, "Claim Serveur");
         translationBuilder.add(ModItems.SERVER_UNCLAIM, "Déclaim Serveur");
+        translationBuilder.add(ModItems.MICROPHONE, "Microphone");
+        translationBuilder.add(ModItems.MIC_HOLDER, "Pied à Microphone");
+
     }
 }

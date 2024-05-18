@@ -1,5 +1,6 @@
-package com.zondayland.generation.textures;
+package com.zondayland.generation;
 
+import com.zondayland.registry.ModBlocks;
 import com.zondayland.registry.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;

@@ -1,0 +1,36 @@
+{
+  "variants": {
+
+    "holding=false,facing=east": {
+      "model": "zondayland:block/mic_holder",
+      "y": 90
+    },
+    "holding=false,facing=north": {
+      "model": "zondayland:block/mic_holder"
+    },
+    "holding=false,facing=south": {
+      "model": "zondayland:block/mic_holder",
+      "y": 180
+    },
+    "holding=false,facing=west": {
+      "model": "zondayland:block/mic_holder",
+      "y": 270
+    },
+    
+    "holding=true,facing=east": {
+      "model": "zondayland:block/mic_holder_holding",
+      "y": 90
+    },
+    "holding=true,facing=north": {
+      "model": "zondayland:block/mic_holder_holding"
+    },
+    "holding=true,facing=south": {
+      "model": "zondayland:block/mic_holder_holding",
+      "y": 180
+    },
+    "holding=true,facing=west": {
+      "model": "zondayland:block/mic_holder_holding",
+      "y": 270
+    }
+  }
+}

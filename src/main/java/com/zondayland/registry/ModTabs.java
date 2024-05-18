@@ -20,7 +20,9 @@ public class ModTabs {
             ModItems.CLAIM_PARCHMENT,
             ModItems.UNCLAIM_PARCHMENT,
             ModItems.SERVER_CLAIM,
-            ModItems.SERVER_UNCLAIM
+            ModItems.SERVER_UNCLAIM,
+            ModItems.MICROPHONE,
+            ModItems.MIC_HOLDER
     };
     public static final ItemGroup MOD_TAB = ItemGroup.create(ItemGroup.Row.TOP, 0)
                                                      .displayName(Text.of("Zondayland"))

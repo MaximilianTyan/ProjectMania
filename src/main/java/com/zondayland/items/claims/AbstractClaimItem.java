@@ -51,9 +51,8 @@ public abstract class AbstractClaimItem extends Item {
             ZondayLand.LOGGER.info("Server: Failed to (server)(un)claim chunk");
             return TypedActionResult.fail(itemStack);
         }
-        ;
 
-        this.successAction(world, user, user.getChunkPos());
+        this.onClaimSuccess(world, user, user.getChunkPos());
 
         if (!user.getAbilities().creativeMode) {
             itemStack.decrement(1);
@@ -165,5 +164,5 @@ public abstract class AbstractClaimItem extends Item {
 
     protected abstract boolean claimOperation(World world, PlayerEntity user);
 
-    protected abstract void successAction(World world, PlayerEntity user, ChunkPos pos);
+    protected abstract void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos);
 }

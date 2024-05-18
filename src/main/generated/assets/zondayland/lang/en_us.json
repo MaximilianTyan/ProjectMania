@@ -1,6 +1,8 @@
 {
+  "block.zondayland.mic_holder": "Microphone holder",
   "item.zondayland.claim_parchment": "Claim Parchment",
   "item.zondayland.logo": "Logo",
+  "item.zondayland.microphone": "Microphone",
   "item.zondayland.server_claim": "Server Claim",
   "item.zondayland.server_unclaim": "Server Unclaim",
   "item.zondayland.unclaim_parchment": "Unclaim Parchment"

@@ -1,5 +1,6 @@
 package com.zondayland;
 
+import com.zondayland.registry.ModBlocks;
 import com.zondayland.registry.ModCommands;
 import com.zondayland.registry.ModItems;
 import com.zondayland.registry.ModTabs;
@@ -18,10 +19,11 @@ public class ZondayLand implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
+        ModBlocks.register();
         ModItems.register();
         ModTabs.register();
         ModCommands.register();
 
-        LOGGER.info("Initializing %s", MOD_ID);
+        LOGGER.info("Initializing %s".formatted(MOD_ID));
     }
 }

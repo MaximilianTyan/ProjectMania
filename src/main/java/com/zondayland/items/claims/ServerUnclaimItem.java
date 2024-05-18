@@ -112,7 +112,7 @@ public class ServerUnclaimItem extends AbstractClaimItem {
     }
 
     @Override
-    protected void successAction(World world, PlayerEntity user, ChunkPos pos) {
+    protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
         {
             ServerPlayNetworking.send((ServerPlayerEntity) user, PacketIdentifiers.UNCLAIM_SUCCESS, PacketByteBufs.empty());
 
