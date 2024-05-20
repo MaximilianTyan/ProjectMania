@@ -1,6 +1,5 @@
 {
   "variants": {
-
     "holding=false,facing=east": {
       "model": "zondayland:block/mic_holder",
       "y": 90
@@ -16,7 +15,6 @@
       "model": "zondayland:block/mic_holder",
       "y": 270
     },
-    
     "holding=true,facing=east": {
       "model": "zondayland:block/mic_holder_holding",
       "y": 90

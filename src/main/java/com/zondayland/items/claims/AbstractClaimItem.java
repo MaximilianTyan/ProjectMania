@@ -41,26 +41,6 @@ public abstract class AbstractClaimItem extends Item {
         super(settings);
     }
 
-    @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (world.isClient()) return super.use(world, user, hand);
-
-        ItemStack itemStack = user.getStackInHand(hand);
-
-        if (!this.claimOperation(world, user)) {
-            ZondayLand.LOGGER.info("Server: Failed to (server)(un)claim chunk");
-            return TypedActionResult.fail(itemStack);
-        }
-
-        this.onClaimSuccess(world, user, user.getChunkPos());
-
-        if (!user.getAbilities().creativeMode) {
-            itemStack.decrement(1);
-        }
-
-        return TypedActionResult.success(itemStack, true);
-    }
-
     protected static int OpacClaimProcess(
             ServerPlayerEntity player, boolean shouldClaim, boolean shouldServerClaim, boolean shouldReplace
     ) {
@@ -125,9 +105,9 @@ public abstract class AbstractClaimItem extends Item {
                     return 1;
                 } else {
                     player.sendMessage(Text.of("Could not claim chunk: " + result.getResultType()
-                                                                                   .toString()
-                                                                                   .toLowerCase()
-                                                                                   .replace('_', ' ')));
+                                                                                 .toString()
+                                                                                 .toLowerCase()
+                                                                                 .replace('_', ' ')));
                     return 0;
                 }
 
@@ -160,6 +140,26 @@ public abstract class AbstractClaimItem extends Item {
                         player
                 );
         }
+    }
+
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if (world.isClient()) return super.use(world, user, hand);
+
+        ItemStack itemStack = user.getStackInHand(hand);
+
+        if (!this.claimOperation(world, user)) {
+            ZondayLand.LOGGER.info("Server: Failed to (server)(un)claim chunk");
+            return TypedActionResult.fail(itemStack);
+        }
+
+        this.onClaimSuccess(world, user, user.getChunkPos());
+
+        if (!user.getAbilities().creativeMode) {
+            itemStack.decrement(1);
+        }
+
+        return TypedActionResult.success(itemStack, true);
     }
 
     protected abstract boolean claimOperation(World world, PlayerEntity user);

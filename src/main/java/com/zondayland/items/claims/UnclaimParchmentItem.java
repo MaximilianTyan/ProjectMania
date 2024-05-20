@@ -1,16 +1,13 @@
 package com.zondayland.items.claims;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.zondayland.ZondayLand;
 import com.zondayland.network.PacketIdentifiers;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -38,10 +35,15 @@ public class UnclaimParchmentItem extends AbstractClaimItem {
 //        }
         return 1 == OpacClaimProcess((ServerPlayerEntity) user, false, false, false);
     }
+
     @Override
     protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
         {
-            ServerPlayNetworking.send((ServerPlayerEntity) user, PacketIdentifiers.UNCLAIM_SUCCESS, PacketByteBufs.empty());
+            ServerPlayNetworking.send(
+                    (ServerPlayerEntity) user,
+                    PacketIdentifiers.UNCLAIM_SUCCESS,
+                    PacketByteBufs.empty()
+            );
 
             world.playSound(
                     (PlayerEntity) null,

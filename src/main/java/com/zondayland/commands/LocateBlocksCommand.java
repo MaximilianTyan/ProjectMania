@@ -27,11 +27,6 @@ public class LocateBlocksCommand implements Command<ServerCommandSource> {
     private static final int MAX_RADIUS = 1_000;
     private static final int DEFAULT_RADIUS = 100;
 
-    @Override
-    public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return 0;
-    }
-
     public static void register(
             CommandDispatcher<ServerCommandSource> dispatcher,
             CommandRegistryAccess registryAccess,
@@ -125,6 +120,11 @@ public class LocateBlocksCommand implements Command<ServerCommandSource> {
 
         MutableText feedback = (MutableText) Text.of(blockId.toString());
         source.sendFeedback(() -> feedback.append(" (").append(coordsText).append(")"), false);
+    }
+
+    @Override
+    public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return 0;
     }
 
 }

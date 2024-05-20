@@ -1,6 +1,5 @@
 package com.zondayland.mixin.client;
 
-import com.zondayland.ZondayLand;
 import com.zondayland.registry.ModItems;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.AnimalModel;
@@ -62,7 +61,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity> extends Anim
         boolean isMainArm = entity.getMainArm() == Arm.LEFT;
 
         if (isMainArm && mainHand.isOf(ModItems.MICROPHONE) || (!isMainArm && offHand.isOf(ModItems.MICROPHONE))) {
-             this.leftArm.pitch = MathHelper.clamp((float) this.head.pitch, (float) -0.5f, (float) 0.5f) - 1.4f;
+            this.leftArm.pitch = MathHelper.clamp((float) this.head.pitch, (float) -0.5f, (float) 0.5f) - 1.4f;
             this.leftArm.yaw = MathHelper.clamp((float) this.head.yaw, (float) -0.7f, (float) 0.3f) + 0.5235988f;
         }
     }

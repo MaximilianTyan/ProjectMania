@@ -3,6 +3,8 @@
   "package": "com.zondayland.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "OPACClaimCommandMixin",
+    "OPACUnclaimCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -4,15 +4,14 @@
 ## Features:
 * Parchemin de Claim / Unclaim (server)
 * Commande /locateblock
+* Micro à pied / à main
 
 ## TODO
 Casino:
 * Machine à sous
 * Blackjack
 
-Esthétique:
-* Micro à pied
-* Micro à main
+
 
 
 

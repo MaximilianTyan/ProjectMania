@@ -6,8 +6,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public class ModCommands {
 
-    public static void register()
-    {
+    public static void register() {
         ZondayLand.LOGGER.info("Registering commands");
         CommandRegistrationCallback.EVENT.register(LocateBlocksCommand::register);
     }

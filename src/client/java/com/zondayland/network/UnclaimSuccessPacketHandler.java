@@ -31,7 +31,7 @@ public class UnclaimSuccessPacketHandler {
         for (int xOffset = 0; xOffset < maxXOffset; xOffset += 1) {
             for (int zOffset = 0; zOffset < maxZOffset; zOffset += 1) {
 
-                if (xOffset != 0 && xOffset != maxXOffset-1 && zOffset != 0 && zOffset != maxZOffset-1) continue;
+                if (xOffset != 0 && xOffset != maxXOffset - 1 && zOffset != 0 && zOffset != maxZOffset - 1) continue;
 
                 world.addParticle(
                         ParticleTypes.FLAME,

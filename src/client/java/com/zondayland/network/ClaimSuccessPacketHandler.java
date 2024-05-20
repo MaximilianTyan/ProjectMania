@@ -1,7 +1,6 @@
 package com.zondayland.network;
 
 import com.zondayland.ZondayLandClient;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -19,8 +18,9 @@ public class ClaimSuccessPacketHandler {
         client.execute(() -> action(client, handler, buf, responseSender));
     }
 
-    public static void action(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender)
-    {
+    public static void action(
+            MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender
+    ) {
         ClientWorld world = client.world;
         ClientPlayerEntity player = client.player;
         ChunkPos pos = player.getChunkPos();
@@ -31,7 +31,7 @@ public class ClaimSuccessPacketHandler {
         for (int xOffset = 0; xOffset < maxXOffset; xOffset += 1) {
             for (int zOffset = 0; zOffset < maxZOffset; zOffset += 1) {
 
-                if (xOffset != 0 && xOffset != maxXOffset-1 && zOffset != 0 && zOffset != maxZOffset-1) continue;
+                if (xOffset != 0 && xOffset != maxXOffset - 1 && zOffset != 0 && zOffset != maxZOffset - 1) continue;
 
                 world.addParticle(
                         ParticleTypes.HAPPY_VILLAGER,

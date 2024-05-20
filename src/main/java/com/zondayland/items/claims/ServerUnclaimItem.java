@@ -1,18 +1,15 @@
 package com.zondayland.items.claims;
 
 import com.google.common.collect.Sets;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.zondayland.ZondayLand;
 import com.zondayland.network.PacketIdentifiers;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
@@ -41,6 +38,7 @@ public class ServerUnclaimItem extends AbstractClaimItem {
     public ServerUnclaimItem(Settings settings) {
         super(settings);
     }
+
     private static void ServerUnclaimChunk(MinecraftServer server, World world, ServerPlayerEntity serverPlayer) {
         ChunkPos chunkPos = serverPlayer.getChunkPos();
 
@@ -114,7 +112,11 @@ public class ServerUnclaimItem extends AbstractClaimItem {
     @Override
     protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
         {
-            ServerPlayNetworking.send((ServerPlayerEntity) user, PacketIdentifiers.UNCLAIM_SUCCESS, PacketByteBufs.empty());
+            ServerPlayNetworking.send(
+                    (ServerPlayerEntity) user,
+                    PacketIdentifiers.UNCLAIM_SUCCESS,
+                    PacketByteBufs.empty()
+            );
 
             world.playSound(
                     (PlayerEntity) null,
