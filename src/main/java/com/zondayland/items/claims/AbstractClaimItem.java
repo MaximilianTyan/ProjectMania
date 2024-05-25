@@ -2,17 +2,18 @@ package com.zondayland.items.claims;
 
 import com.google.common.collect.Sets;
 import com.zondayland.ZondayLand;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
@@ -37,29 +38,29 @@ import xaero.pac.common.server.player.data.api.ServerPlayerDataAPI;
 import java.util.UUID;
 
 public abstract class AbstractClaimItem extends Item {
-    public AbstractClaimItem(Settings settings) {
+    public AbstractClaimItem(Item.Properties settings) {
         super(settings);
     }
 
     protected static int OpacClaimProcess(
-            ServerPlayerEntity player, boolean shouldClaim, boolean shouldServerClaim, boolean shouldReplace
+            ServerPlayer player, boolean shouldClaim, boolean shouldServerClaim, boolean shouldReplace
     ) {
-        ServerWorld world = player.getServerWorld();
+        ServerLevel world = (ServerLevel) player.level();
         ServerPlayerData playerData = (ServerPlayerData) ServerPlayerDataAPI.from(player);
 
         MinecraftServer server = world.getServer();
         IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
                 serverData = ServerData.from(server);
 
-        int chunkX = player.getChunkPos().x;
-        int chunkZ = player.getChunkPos().z;
+        int chunkX = player.chunkPosition().x;
+        int chunkZ = player.chunkPosition().z;
 
-        UUID claimId = shouldServerClaim ? PlayerConfig.SERVER_CLAIM_UUID : player.getUuid();
+        UUID claimId = shouldServerClaim ? PlayerConfig.SERVER_CLAIM_UUID : player.getUUID();
 
         // Timing shinanigans -------------
         if (serverData.getServerTickHandler().getTickCounter() == playerData.getClaimActionRequestHandler()
                                                                             .getLastRequestTickCounter()) {
-            player.sendMessage(Text.of("Could not (un)claim, timing error"));
+            player.sendSystemMessage(Component.literal("Could not (un)claim, timing error"));
             return 0;//going too fast
         }
         playerData.getClaimActionRequestHandler()
@@ -75,7 +76,7 @@ public abstract class AbstractClaimItem extends Item {
         try {
             if (shouldClaim) {
                 // Claim action
-                IPlayerConfig playerConfig = serverData.getPlayerConfigs().getLoadedConfig(player.getUuid());
+                IPlayerConfig playerConfig = serverData.getPlayerConfigs().getLoadedConfig(player.getUUID());
                 IPlayerConfig usedSubConfig =
                         shouldServerClaim ? playerConfig.getUsedServerSubConfig() : playerConfig.getUsedSubConfig();
                 int subConfigIndex = usedSubConfig.getSubIndex();
@@ -90,21 +91,21 @@ public abstract class AbstractClaimItem extends Item {
                 // int z,
                 // boolean replace
                 result = claimsManager.tryToClaim(
-                        world.getDimensionKey().getValue(),
+                        world.dimension().location(),
                         claimId,
                         subConfigIndex,
-                        player.getChunkPos().x,
-                        player.getChunkPos().z,
+                        player.chunkPosition().x,
+                        player.chunkPosition().z,
                         chunkX,
                         chunkZ,
                         shouldReplace
                 );
 
                 if (result.getResultType().success) {
-                    player.sendMessage(Text.of("Successfully claimed chunk (%d, %d)".formatted(chunkX, chunkZ)));
+                    player.sendSystemMessage(Component.literal("Successfully claimed chunk (%d, %d)".formatted(chunkX, chunkZ)));
                     return 1;
                 } else {
-                    player.sendMessage(Text.of("Could not claim chunk: " + result.getResultType()
+                    player.sendSystemMessage(Component.literal("Could not claim chunk: " + result.getResultType()
                                                                                  .toString()
                                                                                  .toLowerCase()
                                                                                  .replace('_', ' ')));
@@ -114,19 +115,19 @@ public abstract class AbstractClaimItem extends Item {
             } else {
                 // Unclaim action
                 result = claimsManager.tryToUnclaim(
-                        world.getDimensionKey().getValue(),
+                        world.dimension().location(),
                         claimId,
-                        player.getChunkPos().x,
-                        player.getChunkPos().z,
+                        player.chunkPosition().x,
+                        player.chunkPosition().z,
                         chunkX,
                         chunkZ,
                         shouldReplace
                 );
                 if (result.getResultType().success) {
-                    player.sendMessage(Text.of("Successfully unclaimed chunk (%d, %d)".formatted(chunkX, chunkZ)));
+                    player.sendSystemMessage(Component.literal("Successfully unclaimed chunk (%d, %d)".formatted(chunkX, chunkZ)));
                     return 1;
                 } else {
-                    player.sendMessage(Text.of("Could not unclaim chunk: " + result.getResultType()
+                    player.sendSystemMessage(Component.literal("Could not unclaim chunk: " + result.getResultType()
                                                                                    .toString()
                                                                                    .toLowerCase()
                                                                                    .replace('_', ' ')));
@@ -143,26 +144,26 @@ public abstract class AbstractClaimItem extends Item {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (world.isClient()) return super.use(world, user, hand);
+    public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        if (world.isClientSide) return super.use(world, user, hand);
 
-        ItemStack itemStack = user.getStackInHand(hand);
+        ItemStack itemStack = user.getItemInHand(hand);
 
         if (!this.claimOperation(world, user)) {
             ZondayLand.LOGGER.info("Server: Failed to (server)(un)claim chunk");
-            return TypedActionResult.fail(itemStack);
+            return InteractionResultHolder.fail(itemStack);
         }
 
-        this.onClaimSuccess(world, user, user.getChunkPos());
+        this.onClaimSuccess(world, user, user.chunkPosition());
 
-        if (!user.getAbilities().creativeMode) {
-            itemStack.decrement(1);
+        if (!user.getAbilities().invulnerable) {
+            itemStack.shrink(1);
         }
 
-        return TypedActionResult.success(itemStack, true);
+        return InteractionResultHolder.success(itemStack);
     }
 
-    protected abstract boolean claimOperation(World world, PlayerEntity user);
+    protected abstract boolean claimOperation(Level world, Player user);
 
-    protected abstract void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos);
+    protected abstract void onClaimSuccess(Level world, Player user, ChunkPos pos);
 }

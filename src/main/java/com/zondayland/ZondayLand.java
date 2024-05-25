@@ -10,11 +10,12 @@ import org.slf4j.LoggerFactory;
 
 public class ZondayLand implements ModInitializer {
 
-    public static final String MOD_ID = "zondayland";
+    public static final String MOD_ID = "${mod_id}";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
+        LOGGER.info("Initializing %s".formatted(MOD_ID));
 
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
@@ -24,6 +25,5 @@ public class ZondayLand implements ModInitializer {
         ModTabs.register();
         ModCommands.register();
 
-        LOGGER.info("Initializing %s".formatted(MOD_ID));
     }
 }

@@ -1,6 +1,5 @@
 package com.zondayland;
 
-import com.zondayland.network.ModClientPacketHandler;
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,5 +12,6 @@ public class ZondayLandClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ModClientPacketHandler.register();
+        ModClientScreen.register();
     }
 }

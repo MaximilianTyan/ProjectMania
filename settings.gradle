@@ -1,3 +1,4 @@
+// Workspace wide repositories ONLY, nothing to add here
 pluginManagement {
 	repositories {
 		maven {

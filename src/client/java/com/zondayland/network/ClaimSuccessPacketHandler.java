@@ -2,32 +2,34 @@ package com.zondayland.network;
 
 import com.zondayland.ZondayLandClient;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.ChunkPos;
 
 public class ClaimSuccessPacketHandler {
     public static void receive(
-            MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender
+            Minecraft minecraft, ClientPacketListener clientPacketListener, FriendlyByteBuf friendlyByteBuf,
+            PacketSender packetSender
     ) {
         ZondayLandClient.LOGGER.info("Claim Success packet received");
-        client.execute(() -> action(client, handler, buf, responseSender));
+        minecraft.execute(() -> action(minecraft, clientPacketListener, friendlyByteBuf, packetSender));
     }
 
     public static void action(
-            MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender
+            Minecraft minecraft, ClientPacketListener clientPacketListener, FriendlyByteBuf friendlyByteBuf,
+            PacketSender packetSender
     ) {
-        ClientWorld world = client.world;
-        ClientPlayerEntity player = client.player;
-        ChunkPos pos = player.getChunkPos();
+        ClientLevel world = minecraft.level;
+        LocalPlayer player = minecraft.player;
+        ChunkPos pos = player.chunkPosition();
 
         final int particlePerBlock = 4;
-        final int maxXOffset = 16 * particlePerBlock;
-        final int maxZOffset = 16 * particlePerBlock;
+        final int maxXOffset = (pos.getMaxBlockX() - pos.getMinBlockX()) * particlePerBlock;
+        final int maxZOffset = (pos.getMaxBlockZ() - pos.getMinBlockZ()) * particlePerBlock;
         for (int xOffset = 0; xOffset < maxXOffset; xOffset += 1) {
             for (int zOffset = 0; zOffset < maxZOffset; zOffset += 1) {
 
@@ -35,12 +37,15 @@ public class ClaimSuccessPacketHandler {
 
                 world.addParticle(
                         ParticleTypes.HAPPY_VILLAGER,
-                        pos.getStartX() + (double) xOffset / particlePerBlock,
+                        pos.getMinBlockX() + (double) xOffset / particlePerBlock,
                         player.getY() + 0.5,
-                        pos.getStartZ() + (double) zOffset / particlePerBlock,
-                        0, 0, 0
+                        pos.getMinBlockZ() + (double) zOffset / particlePerBlock,
+                        0,
+                        0,
+                        0
                 );
             }
         }
     }
+
 }

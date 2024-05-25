@@ -3,71 +3,81 @@ package com.zondayland.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.commands.LocateCommand;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class LocateBlocksCommand implements Command<ServerCommandSource> {
+public class LocateBlocksCommand implements Command<CommandSourceStack> {
 
     private static final int MAX_RADIUS = 1_000;
     private static final int DEFAULT_RADIUS = 100;
 
     public static void register(
-            CommandDispatcher<ServerCommandSource> dispatcher,
-            CommandRegistryAccess registryAccess,
-            CommandManager.RegistrationEnvironment environment
+            CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess,
+            Commands.CommandSelection commandSelection
     ) {
-        dispatcher.register(
-                literal("locateblock")
-                        .requires(commandSource -> commandSource.hasPermissionLevel(PermissionLevels.GAMEMASTER))
-                        .then(argument("block", BlockStateArgumentType.blockState(registryAccess))
-                                .executes(context -> executes(context, true))
-                                .then(argument("radius", IntegerArgumentType.integer(0, MAX_RADIUS))
-                                        .executes(context -> executes(context, false))
-                                )
-                        )
-        );
+        // Forced to declare arguments outside cause generics DON'T FUCKING WORK with this builder pattern
+        // Makes for cleaner code though (yeah I HATE the builder pattern formatting)
+
+        // Arguments
+        LiteralArgumentBuilder<CommandSourceStack> literalArg = LiteralArgumentBuilder.literal("locateblock");
+        RequiredArgumentBuilder<CommandSourceStack, ?> blockArg =
+                argument("block", BlockStateArgument.block(registryAccess));
+        RequiredArgumentBuilder<CommandSourceStack, ?> radiusArg =
+                argument("radius", IntegerArgumentType.integer(0, MAX_RADIUS));
+
+        // Structure
+        LiteralArgumentBuilder<CommandSourceStack> command =
+                literalArg.requires(commandSource -> commandSource.hasPermission(PermissionLevels.GAMEMASTER))
+                          .executes(context -> executes(context, true))
+                          .then(radiusArg
+                                  .then(blockArg
+                                          .executes(context -> executes(context, false))
+                                  )
+                          );
+        dispatcher.register(command);
     }
 
-    private static int executes(CommandContext<ServerCommandSource> context, boolean isDefaultDistance) {
-        BlockState refBlockState = BlockStateArgumentType.getBlockState(context, "block").getBlockState();
-        Identifier refId = Registries.BLOCK.getId(refBlockState.getBlock());
+    private static int executes(CommandContext<CommandSourceStack> context, boolean isDefaultDistance) {
+        BlockState refBlockState = BlockStateArgument.getBlock(context, "blockArg").getState();
+        ResourceLocation refId = BuiltInRegistries.BLOCK.getKey(refBlockState.getBlock());
 
         int radius = DEFAULT_RADIUS;
         if (!isDefaultDistance) {
-            radius = IntegerArgumentType.getInteger(context, "radius");
+            radius = IntegerArgumentType.getInteger(context, "radiusArg");
         }
 
-        ServerCommandSource source = context.getSource();
-        World world = source.getWorld();
-        BlockPos centerPos = BlockPos.ofFloored(source.getPosition());
+        CommandSourceStack source = context.getSource();
+        Level world = source.getLevel();
+        BlockPos centerPos = BlockPos.containing(source.getPosition());
 
         int min_dx = centerPos.getX() - (radius / 2);
         int max_dx = centerPos.getX() + (radius / 2);
 
-        int min_dy = max(centerPos.getY() - (radius / 2), world.getBottomY());
-        int max_dy = min(centerPos.getY() + (radius / 2), world.getTopY());
+        int min_dy = max(centerPos.getY() - (radius / 2), world.getMinBuildHeight());
+        int max_dy = min(centerPos.getY() + (radius / 2), world.getMaxBuildHeight());
 
         int min_dz = centerPos.getZ() - (radius / 2);
         int max_dz = centerPos.getZ() + (radius / 2);
 
-        source.sendMessage(Text.of("Searching for block %s in radius %d (%d:%d %d:%d %d:%d)".formatted(
-                refId,
+        source.sendSystemMessage(Component.literal("Searching for blockArg %s in radiusArg %d (%d:%d %d:%d %d:%d)".formatted(refId,
                 radius,
                 min_dx,
                 max_dx,
@@ -94,37 +104,39 @@ public class LocateBlocksCommand implements Command<ServerCommandSource> {
         }
 
         if (blockCount == 0) {
-            source.sendError(Text.literal("Could not find any block %s in radius %d".formatted(refId, radius)));
+            source.sendFailure(Component.literal("Could not find any blockArg %s in radiusArg %d".formatted(refId,
+                    radius
+            )));
             return 0;
         } else {
-            source.sendMessage(Text.of("Found %d blocks %s in radius %d".formatted(blockCount, refId, radius)));
+            source.sendSystemMessage(Component.literal("Found %d blocks %s in radiusArg %d".formatted(blockCount,
+                    refId,
+                    radius
+            )));
             return 1;
         }
     }
 
+    /** See original feedback in {@link LocateCommand} */
     private static void foundBlock(
-            ServerCommandSource source, Identifier blockId, BlockPos blockPos
+            CommandSourceStack source, ResourceLocation blockId, BlockPos blockPos
     ) {
-        // Inspired by class LocateCommand
 
         String tpCommand = "/tp @s %d %d %d".formatted(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
 
-        MutableText coordsText = (MutableText) Text.of(blockPos.toShortString());
+        MutableComponent coordsText = (MutableComponent) Component.literal(blockPos.toShortString());
         ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, tpCommand);
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to teleport"));
-        Style coordsStyle = Style.EMPTY
-                .withFormatting(Formatting.AQUA)
-                .withClickEvent(clickEvent)
-                .withHoverEvent(hoverEvent);
+        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to teleport"));
+        Style coordsStyle =
+                Style.EMPTY.applyFormat(ChatFormatting.AQUA).withClickEvent(clickEvent).withHoverEvent(hoverEvent);
         coordsText.setStyle(coordsStyle);
 
-        MutableText feedback = (MutableText) Text.of(blockId.toString());
-        source.sendFeedback(() -> feedback.append(" (").append(coordsText).append(")"), false);
+        MutableComponent feedback = (MutableComponent) Component.literal(blockId.toString());
+        source.sendSuccess(() -> feedback.append(" (").append(coordsText).append(")"), false);
     }
 
     @Override
-    public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         return 0;
     }
-
 }

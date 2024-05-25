@@ -4,25 +4,25 @@ import com.zondayland.ZondayLand;
 import com.zondayland.network.PacketIdentifiers;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 
 public class ServerClaimItem extends AbstractClaimItem {
     private static final String ClaimCommand = "openpac-claims server claim anyway";
 
-    public ServerClaimItem(Settings settings) {
+    public ServerClaimItem(Properties settings) {
         super(settings);
     }
 
 
     @Override
-    protected boolean claimOperation(World world, PlayerEntity user) {
-        ChunkPos chunkPos = user.getChunkPos();
-        ZondayLand.LOGGER.info("Attempting server claim of chunk " + chunkPos.toString() + " as " + user.getEntityName());
+    protected boolean claimOperation(Level world, Player user) {
+        ChunkPos chunkPos = user.chunkPosition();
+        ZondayLand.LOGGER.info("Attempting server claim of chunk " + chunkPos.toString() + " as " + user.getName());
 
 //        try {
 //            return 1 == user.getServer()
@@ -35,23 +35,23 @@ public class ServerClaimItem extends AbstractClaimItem {
 //            return false;
 //        }
 
-        return 1 == OpacClaimProcess((ServerPlayerEntity) user, true, true, true);
+        return 1 == OpacClaimProcess((ServerPlayer) user, true, true, true);
     }
 
     @Override
-    protected void onClaimSuccess(World world, PlayerEntity user, ChunkPos pos) {
+    protected void onClaimSuccess(Level world, Player user, ChunkPos pos) {
         {
             ServerPlayNetworking.send(
-                    (ServerPlayerEntity) user,
+                    (ServerPlayer) user,
                     PacketIdentifiers.CLAIM_SUCCESS,
                     PacketByteBufs.empty()
             );
 
             world.playSound(
-                    (PlayerEntity) null,
-                    user.getBlockPos(),
-                    SoundEvents.ENTITY_EVOKER_PREPARE_WOLOLO,
-                    SoundCategory.PLAYERS
+                    (Player) null,
+                    user.blockPosition(),
+                    SoundEvents.EVOKER_PREPARE_WOLOLO,
+                    SoundSource.PLAYERS
             );
         }
     }

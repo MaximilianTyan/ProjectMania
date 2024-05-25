@@ -1,6 +1,8 @@
-package com.zondayland.network;
+package com.zondayland;
 
-import com.zondayland.ZondayLandClient;
+import com.zondayland.network.ClaimSuccessPacketHandler;
+import com.zondayland.network.PacketIdentifiers;
+import com.zondayland.network.UnclaimSuccessPacketHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class ModClientPacketHandler {

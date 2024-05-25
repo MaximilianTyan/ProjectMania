@@ -1,12 +1,12 @@
 package com.zondayland.registry;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
@@ -24,19 +24,16 @@ public class ModTabs {
             ModItems.MICROPHONE,
             ModItems.MIC_HOLDER
     };
-    public static final ItemGroup MOD_TAB = ItemGroup.create(ItemGroup.Row.TOP, 0)
-                                                     .displayName(Text.of("Zondayland"))
-                                                     .icon(() -> new ItemStack(ModItems.LOGO))
-                                                     .entries(ModTabs::registerEntries)
-                                                     .build();
-
-    private static void registerEntries(ItemGroup.DisplayContext displayContext, ItemGroup.Entries entries) {
-        Arrays.stream(ITEMS).forEach(entries::add);
-    }
+    public static final CreativeModeTab MOD_TAB = CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                                                                 .title(Component.literal("Zondayland"))
+                                                                 .icon(() -> new ItemStack(ModItems.LOGO))
+                                                                 .displayItems((params, output) -> Arrays.stream(ITEMS)
+                                                                                                         .forEach(output::accept))
+                                                                 .build();
 
     public static void register() {
         LOGGER.info("Registering tab");
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(MOD_ID, "group"), MOD_TAB);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(MOD_ID, "group"), MOD_TAB);
     }
 }
