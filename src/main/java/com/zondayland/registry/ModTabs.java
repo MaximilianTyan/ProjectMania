@@ -32,7 +32,7 @@ public class ModTabs {
                                                                  .build();
 
     public static void register() {
-        LOGGER.info("Registering tab");
+        LOGGER.info("Registering creative tab");
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(MOD_ID, "group"), MOD_TAB);
     }

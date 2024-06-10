@@ -3,7 +3,8 @@
   "package": "com.zondayland.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "HumanoidModelMixin"
+    "HumanoidModelMixin",
+    "BeeQueenRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,7 +14,7 @@ public class ModBlocks {
     public static final Block MIC_HOLDER = new MicHolderBlock(FabricBlockSettings.create());
 
     public static void register() {
-        LOGGER.info("Registering items");
+        LOGGER.info("Registering blocks");
         Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MOD_ID, "mic_holder"), MIC_HOLDER);
     }
 }

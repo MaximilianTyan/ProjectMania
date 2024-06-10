@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${version}",
-  "name": "Zonday Land",
+  "id": "zondayland",
+  "version": "${mod_version}",
+  "name": "Zondayland",
   "description": "Mod officiel de ZondayLand",
   "authors": [
     "merlinein"
@@ -35,8 +35,12 @@
   "depends": {
     "fabricloader": ">=0.14.24",
     "minecraft": "~${minecraft_version}",
-    "java": ">=17",
+    "java": ">=${java_version}",
     "fabric-api": "*",
-    "forgeconfigapiport": ">=${forge_config_port_version}"
-  }
+    "midnightlib": ">=${midnightlib_version}",
+    "openpartiesandclaims": ">=${open_parties_and_claims_version}"
+  },
+  "recommends": {
+  },
+  "accessWidener": "zondayland.accesswidener"
 }

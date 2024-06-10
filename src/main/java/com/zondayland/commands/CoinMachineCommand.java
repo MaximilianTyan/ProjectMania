@@ -5,7 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.zondayland.gui.CoinMachineScreenHandler;
+import com.zondayland.gui.CoinMachineMenu;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -18,7 +18,7 @@ public class CoinMachineCommand implements Command<CommandSourceStack> {
             CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess,
             Commands.CommandSelection environment
     ) {
-        LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("locateblock");
+        LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("coinmachine");
         dispatcher.register(command.executes(CoinMachineCommand::executes));
     }
 
@@ -26,7 +26,7 @@ public class CoinMachineCommand implements Command<CommandSourceStack> {
         CommandSourceStack source = objectCommandContext.getSource();
         ServerPlayer player = source.getPlayer();
         if (player == null) return 0;
-        player.openMenu(CoinMachineScreenHandler.getMenuProvider());
+        player.openMenu(CoinMachineMenu.getMenuProvider());
         return 1;
     }
 

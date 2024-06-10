@@ -1,7 +1,7 @@
 package com.zondayland.items.claims;
 
 import com.zondayland.ZondayLand;
-import com.zondayland.network.PacketIdentifiers;
+import com.zondayland.network.PacketsIdentifier;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +21,7 @@ public class ServerUnclaimItem extends AbstractClaimItem {
     @Override
     protected boolean claimOperation(Level world, Player user) {
         ChunkPos chunkPos = user.chunkPosition();
-        ZondayLand.LOGGER.info("Attempting server unclaim of chunk " + chunkPos.toString() + " as " + user.getName());
+        ZondayLand.LOGGER.info("Attempting server unclaim of chunk {} as {}", chunkPos.toString(), user.getName());
 
 //        try {
 //            return 1 == user.getServer()
@@ -41,7 +41,7 @@ public class ServerUnclaimItem extends AbstractClaimItem {
         {
             ServerPlayNetworking.send(
                     (ServerPlayer) user,
-                    PacketIdentifiers.UNCLAIM_SUCCESS,
+                    PacketsIdentifier.UNCLAIM_SUCCESS,
                     PacketByteBufs.empty()
             );
 

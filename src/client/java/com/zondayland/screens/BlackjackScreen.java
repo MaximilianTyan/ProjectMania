@@ -2,6 +2,7 @@ package com.zondayland.screens;
 
 import com.zondayland.ZondayLand;
 import com.zondayland.ZondayLandClient;
+import com.zondayland.gui.BlackjackMenu;
 import com.zondayland.gui.CoinMachineMenu;
 import com.zondayland.gui.GUIConstants;
 import com.zondayland.network.PacketsIdentifier;
@@ -15,11 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class CoinMachineScreen extends AbstractContainerScreen<CoinMachineMenu> {
-    private static final ResourceLocation BACKGROUND =
-            new ResourceLocation(ZondayLand.MOD_ID, "textures/gui/menus/coin_machine_gui.png");
+public class BlackjackScreen extends AbstractContainerScreen<BlackjackMenu> {
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(ZondayLand.MOD_ID, "textures/gui/menus/blackjack_gui.png");
 
-    public CoinMachineScreen(CoinMachineMenu handler, Inventory inventory, Component title) {
+    public BlackjackScreen(BlackjackMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
 
@@ -37,7 +37,7 @@ public class CoinMachineScreen extends AbstractContainerScreen<CoinMachineMenu> 
 
     public void onPlayButtonPressed(Button button) {
         ZondayLandClient.LOGGER.info("Coin Machine: Play button pressed");
-        ClientPlayNetworking.send(PacketsIdentifier.COIN_MACHINE_PLAY, PacketByteBufs.empty());
+        ClientPlayNetworking.send(PacketsIdentifier.BLACKJACK_PLAY, PacketByteBufs.empty());
     }
 
     @Override

@@ -46,9 +46,9 @@ public class LocateBlocksCommand implements Command<CommandSourceStack> {
         // Structure
         LiteralArgumentBuilder<CommandSourceStack> command =
                 literalArg.requires(commandSource -> commandSource.hasPermission(PermissionLevels.GAMEMASTER))
-                          .executes(context -> executes(context, true))
-                          .then(radiusArg
-                                  .then(blockArg
+                          .then(blockArg
+                                  .executes(context -> executes(context, true))
+                                  .then(radiusArg
                                           .executes(context -> executes(context, false))
                                   )
                           );
@@ -56,12 +56,12 @@ public class LocateBlocksCommand implements Command<CommandSourceStack> {
     }
 
     private static int executes(CommandContext<CommandSourceStack> context, boolean isDefaultDistance) {
-        BlockState refBlockState = BlockStateArgument.getBlock(context, "blockArg").getState();
+        BlockState refBlockState = BlockStateArgument.getBlock(context, "block").getState();
         ResourceLocation refId = BuiltInRegistries.BLOCK.getKey(refBlockState.getBlock());
 
         int radius = DEFAULT_RADIUS;
         if (!isDefaultDistance) {
-            radius = IntegerArgumentType.getInteger(context, "radiusArg");
+            radius = IntegerArgumentType.getInteger(context, "radius");
         }
 
         CommandSourceStack source = context.getSource();
@@ -77,7 +77,7 @@ public class LocateBlocksCommand implements Command<CommandSourceStack> {
         int min_dz = centerPos.getZ() - (radius / 2);
         int max_dz = centerPos.getZ() + (radius / 2);
 
-        source.sendSystemMessage(Component.literal("Searching for blockArg %s in radiusArg %d (%d:%d %d:%d %d:%d)".formatted(refId,
+        source.sendSystemMessage(Component.literal("Searching for block %s in radius %d (%d:%d %d:%d %d:%d)".formatted(refId,
                 radius,
                 min_dx,
                 max_dx,
@@ -104,12 +104,12 @@ public class LocateBlocksCommand implements Command<CommandSourceStack> {
         }
 
         if (blockCount == 0) {
-            source.sendFailure(Component.literal("Could not find any blockArg %s in radiusArg %d".formatted(refId,
+            source.sendFailure(Component.literal("Could not find any block %s in radius %d".formatted(refId,
                     radius
             )));
             return 0;
         } else {
-            source.sendSystemMessage(Component.literal("Found %d blocks %s in radiusArg %d".formatted(blockCount,
+            source.sendSystemMessage(Component.literal("Found %d blocks %s in radius %d".formatted(blockCount,
                     refId,
                     radius
             )));
