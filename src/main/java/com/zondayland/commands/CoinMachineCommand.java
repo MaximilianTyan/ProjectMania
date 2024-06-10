@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.zondayland.ZondayLand;
 import com.zondayland.gui.CoinMachineMenu;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -25,7 +26,11 @@ public class CoinMachineCommand implements Command<CommandSourceStack> {
     private static int executes(CommandContext<CommandSourceStack> objectCommandContext) {
         CommandSourceStack source = objectCommandContext.getSource();
         ServerPlayer player = source.getPlayer();
-        if (player == null) return 0;
+        if (player == null) {
+            ZondayLand.LOGGER.warn("Coin Machine Command: player is null!");
+            return 0;
+        }
+        ZondayLand.LOGGER.info("Opening Coin Machine Menu from command");
         player.openMenu(CoinMachineMenu.getMenuProvider());
         return 1;
     }

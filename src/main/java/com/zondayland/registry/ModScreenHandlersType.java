@@ -1,5 +1,6 @@
 package com.zondayland.registry;
 
+import com.zondayland.ZondayLand;
 import com.zondayland.gui.BlackjackMenu;
 import com.zondayland.gui.CoinMachineMenu;
 import net.minecraft.core.Registry;

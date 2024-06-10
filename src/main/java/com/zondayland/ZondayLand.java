@@ -20,6 +20,7 @@ public class ZondayLand implements ModInitializer {
         // Proceed with mild caution.
         MidnightConfig.init(MOD_ID, ModConfig.class);
         ModServerPacketHandler.register();
+        ModScreenHandlersType.register();
         ModBlocks.register();
         ModItems.register();
         ModTabs.register();
