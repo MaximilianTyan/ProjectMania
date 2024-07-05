@@ -22,19 +22,28 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 import static com.zondayland.gui.GUIConstants.INV_HOTBAR_GAP;
 import static com.zondayland.gui.GUIConstants.SLOT_SIZE;
 
-public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked {
+public class BlackjackMenu extends AbstractContainerMenu {
     private static final String SCREEN_NAME = "Blackjack";
     public static final int COIN_INPUT_SLOT = 0;
+    public static final int REWARD_OUTPUT_SLOT = 1;
 
     public static final int PLAYER_INVENTORY_FIRST_SLOT = 10;
     public static final int PLAYER_INVENTORY_LAST_SLOT = PLAYER_INVENTORY_FIRST_SLOT + 9 * 4;
 
+    public static final int RANDOM_MAX = 10 + 3;
+    public static final int RANDOM_MIN = 1;
+
+    public static Random random = new Random();
+
+    private int totalPoints = 0;
     public final Player player;
     public final Level level;
-    private final Container screenContainer = new SimpleContainer(3);
+    private final Container screenContainer = new SimpleContainer(2);
     private final ContainerLevelAccess access;
 
     public static BlackjackMenu create(int containerId, Inventory playerInventory) {
@@ -52,6 +61,7 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
         {
             int screenSlotIdx = 0;
             addSlot(new InputSlot(screenContainer, screenSlotIdx++, 18, 33));
+            addSlot(new OutputSlot(screenContainer, screenSlotIdx++, 141, 33));
 
         }
 
@@ -74,6 +84,11 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
 
     }
 
+    public void bid() {
+        this.totalPoints += random.nextInt(RANDOM_MIN, RANDOM_MAX);
+        
+    }
+
     public static MenuProvider getMenuProvider() {
         return new SimpleMenuProvider(
                 (containerId, playerInventory, player) -> new BlackjackMenu(
@@ -83,11 +98,6 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
                 ),
                 Component.literal(SCREEN_NAME)
         );
-    }
-
-    @Override
-    public void tick(Level level, Player player) {
-
     }
 
     @Override
@@ -104,10 +114,9 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
         ItemStack quickMovedStack = rawStack.copy();
 
         // From screen slots
-        if (quickMovedSlotIndex == COIN_INPUT_SLOT) {
+        if (quickMovedSlotIndex == COIN_INPUT_SLOT || quickMovedSlotIndex == REWARD_OUTPUT_SLOT) {
 
-            boolean success =
-                    this.moveItemStackTo(rawStack, PLAYER_INVENTORY_FIRST_SLOT, PLAYER_INVENTORY_LAST_SLOT, false);
+            boolean success = this.moveItemStackTo(rawStack, PLAYER_INVENTORY_FIRST_SLOT, PLAYER_INVENTORY_LAST_SLOT, false);
             if (!success) {
                 return quickMoveFailed;
             }
@@ -118,7 +127,7 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
 
         // From player inventory / hotbar
         else if (PLAYER_INVENTORY_FIRST_SLOT <= quickMovedSlotIndex && quickMovedSlotIndex <= PLAYER_INVENTORY_LAST_SLOT) {
-            boolean success = this.moveItemStackTo(rawStack, COIN_INPUT_SLOT, COIN_INPUT_SLOT, false);
+            boolean success = this.moveItemStackTo(rawStack, COIN_INPUT_SLOT, REWARD_OUTPUT_SLOT, false);
             if (!success) {
                 return quickMoveFailed;
             }
@@ -151,8 +160,6 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
 
     @Override
     public void removed(@NotNull Player player) {
-        ((PlayerTicksAccessor) this.player).zondayLand$removeTickedClass(this);
-
         Slot coinSlot = this.getSlot(COIN_INPUT_SLOT);
         if (coinSlot.hasItem()) {
             ZondayLand.LOGGER.info("Coin Machine: Dropping coin slot: {}", coinSlot.getItem());
@@ -172,6 +179,17 @@ public class BlackjackMenu extends AbstractContainerMenu implements PlayerTicked
             return ModConfig.ValidCoins.stream()
                                        .map(s -> BuiltInRegistries.ITEM.get(new ResourceLocation(s)))
                                        .anyMatch(item -> item == stack.getItem());
+        }
+    }
+
+    static class OutputSlot extends Slot {
+        public OutputSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return false;
         }
     }
 

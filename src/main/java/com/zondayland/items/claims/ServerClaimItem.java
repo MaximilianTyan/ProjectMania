@@ -43,7 +43,7 @@ public class ServerClaimItem extends AbstractClaimItem {
         {
             ServerPlayNetworking.send(
                     (ServerPlayer) user,
-                    PacketsIdentifier.CLAIM_SUCCESS,
+                    PacketsIdentifier.S2C.CLAIM_SUCCESS,
                     PacketByteBufs.empty()
             );
 

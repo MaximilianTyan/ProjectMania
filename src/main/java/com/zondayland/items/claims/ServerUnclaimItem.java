@@ -41,7 +41,7 @@ public class ServerUnclaimItem extends AbstractClaimItem {
         {
             ServerPlayNetworking.send(
                     (ServerPlayer) user,
-                    PacketsIdentifier.UNCLAIM_SUCCESS,
+                    PacketsIdentifier.S2C.UNCLAIM_SUCCESS,
                     PacketByteBufs.empty()
             );
 

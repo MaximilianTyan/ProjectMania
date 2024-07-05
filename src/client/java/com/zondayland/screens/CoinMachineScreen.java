@@ -19,6 +19,8 @@ public class CoinMachineScreen extends AbstractContainerScreen<CoinMachineMenu> 
     private static final ResourceLocation BACKGROUND =
             new ResourceLocation(ZondayLand.MOD_ID, "textures/gui/menus/coin_machine_gui.png");
 
+    private Button playButton;
+
     public CoinMachineScreen(CoinMachineMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
@@ -26,18 +28,26 @@ public class CoinMachineScreen extends AbstractContainerScreen<CoinMachineMenu> 
     @Override
     protected void init() {
         super.init();
-
-        Button PlayButton = Button.builder(Component.literal("Jouer"), this::onPlayButtonPressed)
-                                  .pos(this.leftPos + 50, this.topPos + 32)
-                                  .size(GUIConstants.SLOT_SIZE * 2, GUIConstants.SLOT_SIZE)
-                                  .build();
-
-        addRenderableWidget(PlayButton);
+        playButton = Button.builder(Component.literal("Jouer"), this::onPlayButtonPressed)
+                           .pos(this.leftPos + 50, this.topPos + 32)
+                           .size(GUIConstants.SLOT_SIZE * 2, GUIConstants.SLOT_SIZE)
+                           .build();
+        addRenderableWidget(playButton);
     }
 
     public void onPlayButtonPressed(Button button) {
         ZondayLandClient.LOGGER.info("Coin Machine: Play button pressed");
-        ClientPlayNetworking.send(PacketsIdentifier.COIN_MACHINE_PLAY, PacketByteBufs.empty());
+        ClientPlayNetworking.send(PacketsIdentifier.C2S.COIN_MACHINE_PLAY, PacketByteBufs.empty());
+    }
+
+    public void onGameStart() {
+        ZondayLandClient.LOGGER.info("Coin Machine: Game started");
+        playButton.active = false;
+    }
+
+    public void onGameEnd() {
+        ZondayLandClient.LOGGER.info("Coin Machine: Game ended");
+        playButton.active = true;
     }
 
     @Override

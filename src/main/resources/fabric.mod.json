@@ -27,8 +27,14 @@
   },
   "mixins": [
     "zondayland.mixins.json",
+    "modmixins/create.mixins.json",
+    "modmixins/opac.mixins.json",
     {
       "config": "zondayland.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "modmixins/bumblezone.client.mixins.json",
       "environment": "client"
     }
   ],

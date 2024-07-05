@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.zondayland.mixin.mods.opac",
+  "plugin": "com.zondayland.mixin.mods.opac.OPACMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "OPACClaimCommandMixin",
+    "OPACUnclaimCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

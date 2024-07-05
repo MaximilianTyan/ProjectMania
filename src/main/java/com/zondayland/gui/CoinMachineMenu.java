@@ -200,6 +200,7 @@ public class CoinMachineMenu extends AbstractContainerMenu implements PlayerTick
         this.wheels.forEach(Wheel::startRoll);
 
         broadcastChanges();
+        ServerPlayNetworking.send((ServerPlayer) this.player, PacketsIdentifier.S2C.COIN_MACHINE_STARTED, PacketByteBufs.empty());
         ((PlayerTicksAccessor) this.player).zondayLand$registerTickedClass(this);
 
         isGameRunning = true;
@@ -255,7 +256,7 @@ public class CoinMachineMenu extends AbstractContainerMenu implements PlayerTick
 
         ServerPlayNetworking.send(
                 (ServerPlayer) this.player,
-                winningRoll ? PacketsIdentifier.COIN_MACHINE_WIN : PacketsIdentifier.COIN_MACHINE_LOSE,
+                winningRoll ? PacketsIdentifier.S2C.COIN_MACHINE_WIN : PacketsIdentifier.S2C.COIN_MACHINE_LOSE,
                 PacketByteBufs.empty()
         );
     }
@@ -432,7 +433,7 @@ public class CoinMachineMenu extends AbstractContainerMenu implements PlayerTick
 
             ServerPlayNetworking.send(
                     (ServerPlayer) this.player,
-                    PacketsIdentifier.COIN_MACHINE_WHEEL_STEP,
+                    PacketsIdentifier.S2C.COIN_MACHINE_WHEEL_STEP,
                     PacketByteBufs.empty()
             );
         }
@@ -453,7 +454,7 @@ public class CoinMachineMenu extends AbstractContainerMenu implements PlayerTick
 
             ServerPlayNetworking.send(
                     (ServerPlayer) this.player,
-                    PacketsIdentifier.COIN_MACHINE_WHEEL_STOP,
+                    PacketsIdentifier.S2C.COIN_MACHINE_WHEEL_STOP,
                     PacketByteBufs.empty()
             );
         }

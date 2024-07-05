@@ -41,7 +41,7 @@ public class ClaimParchmentItem extends AbstractClaimItem {
     protected void onClaimSuccess(Level world, Player user, ChunkPos pos) {
         ServerPlayNetworking.send(
                 (ServerPlayer) user,
-                PacketsIdentifier.CLAIM_SUCCESS,
+                PacketsIdentifier.S2C.CLAIM_SUCCESS,
                 PacketByteBufs.empty()
         );
 

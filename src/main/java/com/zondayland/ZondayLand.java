@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 public class ZondayLand implements ModInitializer {
 
     public static final String MOD_ID = "zondayland";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final Logger LOGGER = LoggerFactory.getLogger("Zondayland");
 
     @Override
     public void onInitialize() {

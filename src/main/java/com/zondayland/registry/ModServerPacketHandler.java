@@ -8,6 +8,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 public class ModServerPacketHandler {
     public static void register() {
         ZondayLand.LOGGER.info("Registering server networking receivers");
-        ServerPlayNetworking.registerGlobalReceiver(PacketsIdentifier.COIN_MACHINE_PLAY, CoinMachinePacketHandler::receive);
+        ServerPlayNetworking.registerGlobalReceiver(PacketsIdentifier.C2S.COIN_MACHINE_PLAY, CoinMachinePacketHandler::receive);
     }
 }
