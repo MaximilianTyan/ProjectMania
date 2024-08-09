@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "zondayland",
+  "id": "${mod_id}",
   "version": "${mod_version}",
-  "name": "Zondayland",
-  "description": "Mod officiel de ZondayLand",
+  "name": "${mod_name}",
+  "description": "Mod officiel de ${mod_name}",
   "authors": [
     "merlinein"
   ],
@@ -12,25 +12,26 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "CC0-1.0",
-  "icon": "assets/zondayland/icon.png",
+  "icon": "assets/projectmania/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.zondayland.ZondayLand"
+      "io.github.maximiliantyan.projectmania.ModMain"
     ],
     "client": [
-      "com.zondayland.ZondayLandClient"
+      "io.github.maximiliantyan.projectmania.ModClient"
     ],
     "fabric-datagen": [
-      "com.zondayland.generation.ZondayLandDataGenerator"
+      "io.github.maximiliantyan.projectmania.ModDataGenerator"
     ]
   },
   "mixins": [
-    "zondayland.mixins.json",
+    "mod.mixins.json",
     "modmixins/create.mixins.json",
     "modmixins/opac.mixins.json",
+    "modmixins/connection.mixins.json",
     {
-      "config": "zondayland.client.mixins.json",
+      "config": "mod.client.mixins.json",
       "environment": "client"
     },
     {
@@ -47,6 +48,5 @@
     "openpartiesandclaims": ">=${open_parties_and_claims_version}"
   },
   "recommends": {
-  },
-  "accessWidener": "zondayland.accesswidener"
+  }
 }

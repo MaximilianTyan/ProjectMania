@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "com.zondayland.mixin.mods.opac",
-  "plugin": "com.zondayland.mixin.mods.opac.OPACMixinPlugin",
+  "package": "io.github.maximiliantyan.projectmania.mixin.mods.opac",
+  "plugin": "io.github.maximiliantyan.projectmania.mixin.mods.opac.OPACConditionnalMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "OPACClaimCommandMixin",

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.maximiliantyan.projectmania.mixin.network",
+  "plugin": "io.github.maximiliantyan.projectmania.mixin.network.ConnectionConditionnalMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ConnectionMixin",
+    "ServerConnectionListenerMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerLoginPacketListenerImplMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

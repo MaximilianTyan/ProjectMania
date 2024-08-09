@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "com.zondayland.mixin.mods.create",
-  "plugin": "com.zondayland.mixin.mods.create.CreateMixinPlugin",
+  "package": "io.github.maximiliantyan.projectmania.mixin.mods.create",
+  "plugin": "io.github.maximiliantyan.projectmania.mixin.mods.create.CreateConditionnalMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "CreateDeployerHandlerMixin"

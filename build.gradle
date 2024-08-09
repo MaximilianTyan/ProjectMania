@@ -67,10 +67,8 @@ dependencies {
 loom {
     splitEnvironmentSourceSets()
 
-    accessWidenerPath = file("src/main/resources/zondayland.accesswidener")
-
     mods {
-        "zondayland" {
+        "projectmania" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
@@ -87,6 +85,8 @@ processResources {
 
     Map<String, String> properties = Map.of(
         "mod_version", project.mod_version,
+        "mod_id", project.mod_id,
+        "mod_name", project.mod_name,
         "fabric_loader_version", project.fabric_loader_version,
         "fabric_api_version", project.fabric_api_version,
         "minecraft_version", project.minecraft_version,

@@ -1,7 +1,7 @@
 {
   "required": true,
-  "package": "com.zondayland.mixin.client.mods.bumblezone",
-  "plugin": "com.zondayland.mixin.client.mods.bumblezone.BumblezoneMixinPlugin",
+  "package": "io.github.maximiliantyan.projectmania.mixin.client.mods.bumblezone",
+  "plugin": "io.github.maximiliantyan.projectmania.mixin.client.mods.bumblezone.BumblezoneMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "BeeQueenRendererMixin"
